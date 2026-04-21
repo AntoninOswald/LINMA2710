@@ -105,7 +105,6 @@ The implementation file is `template/distributed_matrix.cpp` (look for `TODO` ma
 
 1. Profile and analyze the communication overhead (MPI operations) versus actual computation time in `DistributedMatrix::multiplyTransposed`.
 2. What is the expected speedup for the distributed `DistributedMatrix::multiplyTransposed` operation? Compare this with the speedup you measure in your numerical experiments.
-3. Compare this distributed approach (splitting columns) with an alternative where data is partitioned among processes and gradients are synchronized afterward.
 
 ## Part 4 — GPU Matrix Operations (OpenCL)
 
