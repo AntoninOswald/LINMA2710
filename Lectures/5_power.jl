@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.20.23
+# v0.20.24
 
 using Markdown
 using InteractiveUtils
@@ -135,9 +135,9 @@ cpu
 # ╔═╡ 09382a24-7e35-45ac-bfbc-46ea15a40590
 md"## Power consumption of GPUs"
 
-# ╔═╡ 98063156-9304-45e7-ad9c-af6dd39187b8
+# ╔═╡ 5e0febd2-3f0d-4643-8401-4abd553ff14e
 gpu = let
-    f = Downloads.download("https://raw.githubusercontent.com/mlco2/impact/refs/heads/master/data/gpus.csv")
+    f = Downloads.download("https://raw.githubusercontent.com/mlco2/impact/a7f24ac0802cd6c0b1b1f7f9769acb1d09290d41/data/gpus.csv")
 	df = CSV.read(f, DataFrame)
 	src = "https://en.wikipedia.org/wiki/List_of_Nvidia_graphics_processing_units#Tegra_GPU"
 	push!(df, ["Tesla H100-PCIE", "gpu", 350, missing, missing, missing, missing, 80, src])
@@ -180,6 +180,17 @@ md"# Reducing power consumption"
 # ╔═╡ 584168f4-facb-4ab8-88af-c2e6e46f981e
 md"## Break down"
 
+# ╔═╡ 02303063-676b-4a82-b15a-676120838a21
+md"""
+The power consumption of a chip is the sum of two sources:
+* *Static power* : primarily due to leakage currents, which become more important as the transistor size decreases. Increases with ``V``.
+* *Dynamic power* : Switching power given by ``CV^2Af`` where
+  - ``C`` : Capacitance being switched
+  - ``V`` : Voltage
+  - ``A`` : *Activity factor*, i.e., number of switches of transistors per clock cycle.
+  - ``f`` : Clock frequency
+"""
+
 # ╔═╡ 0adbb198-25a5-42ef-8fe0-9d725b671c3a
 md"## Dynamic voltage and frequency scaling (DVFS)"
 
@@ -193,19 +204,6 @@ md"[YCC23] J. You, J.-W. Chung and M. Chowdhury. [Zeus: Understanding and Optimi
 
 # ╔═╡ dee22937-fb28-4c25-8948-e8c3d6e86604
 citezeus() = "[YCC23]";
-
-# ╔═╡ 02303063-676b-4a82-b15a-676120838a21
-md"""
-The power consumption of a chip is the sum of two sources:
-* *Static power* : primarily due to leakage currents, which become more important as the transistor size decreases.
-* *Dynamic power* : Switching power given by ``CV^2Af`` where
-  - ``C`` : Capacitance being switched
-  - ``V`` : Voltage
-  - ``A`` : *Activity factor*, i.e., number of switches of transistors per clock cycle.
-  - ``f`` : Clock frequency
-
-The higher the voltage is, the higher are the leakage currents hence the power consumption but the voltage cannot be lowered without lowering the frequency hence the two are often done together → DVFS. Example of application in $(citezeus()).
-"""
 
 # ╔═╡ e7ae324e-4a0d-4199-8673-6bdb23ff4ae9
 md"""
@@ -248,6 +246,9 @@ md"""
 * Decrease interleaving count (cfr. part 1) which needs high frequency but may render the program bandwidth-bound hence the gain in time efficiency is not worth it for high interleave.
 """
 )
+
+# ╔═╡ 22e59d9d-6abc-42eb-86a8-5b3462f7529e
+html"<p align=center style=\"font-size: 20px; margin-bottom: 5cm; margin-top: 5cm;\">The End</p>"
 
 # ╔═╡ 7471cb12-234e-4b4e-83bc-8ebca7493647
 import PlutoPlotly, PlotlyBase, ShortCodes
@@ -349,7 +350,7 @@ Unitful = "~1.28.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.12.5"
+julia_version = "1.12.6"
 manifest_format = "2.0"
 project_hash = "46f1867b0f7cca8efe024234e8c48989eeedf25c"
 
@@ -517,7 +518,7 @@ uuid = "c87230d0-a227-11e9-1b43-d7ebe4e7570a"
 version = "0.4.5"
 
 [[deps.FFMPEG_jll]]
-deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers", "LAME_jll", "Libdl", "Ogg_jll", "OpenSSL_jll", "Opus_jll", "PCRE2_jll", "Zlib_jll", "libaom_jll", "libass_jll", "libfdk_aac_jll", "libvorbis_jll", "x264_jll", "x265_jll"]
+deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers", "LAME_jll", "Libdl", "Ogg_jll", "OpenSSL_jll", "Opus_jll", "PCRE2_jll", "Zlib_jll", "libaom_jll", "libass_jll", "libfdk_aac_jll", "libva_jll", "libvorbis_jll", "x264_jll", "x265_jll"]
 git-tree-sha1 = "01ba9d15e9eae375dc1eb9589df76b3572acd3f2"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "8.0.1+0"
@@ -1282,11 +1283,23 @@ git-tree-sha1 = "1a4a26870bf1e5d26cd585e38038d399d7e65706"
 uuid = "1082639a-0dae-5f34-9b06-72781eeb8cb3"
 version = "1.3.8+0"
 
+[[deps.Xorg_libXfixes_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
+git-tree-sha1 = "75e00946e43621e09d431d9b95818ee751e6b2ef"
+uuid = "d091e8ba-531a-589c-9de9-94069b037ed8"
+version = "6.0.2+0"
+
 [[deps.Xorg_libXrender_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll"]
 git-tree-sha1 = "7ed9347888fac59a618302ee38216dd0379c480d"
 uuid = "ea2f1a96-1ddc-540d-b46f-429655e07cfa"
 version = "0.9.12+0"
+
+[[deps.Xorg_libpciaccess_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Zlib_jll"]
+git-tree-sha1 = "58972370b81423fc546c56a60ed1a009450177c3"
+uuid = "a65dc6b1-eb27-53a1-bb3e-dea574b5389e"
+version = "0.19.0+0"
 
 [[deps.Xorg_libxcb_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libXau_jll", "Xorg_libXdmcp_jll"]
@@ -1334,6 +1347,12 @@ deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
 version = "5.15.0+0"
 
+[[deps.libdrm_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libpciaccess_jll"]
+git-tree-sha1 = "63aac0bcb0b582e11bad965cef4a689905456c03"
+uuid = "8e53e030-5e6c-5a89-a30b-be5b7263a166"
+version = "2.4.125+1"
+
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "646634dd19587a56ee2f1199563ec056c5f228df"
@@ -1345,6 +1364,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Zlib_jll"]
 git-tree-sha1 = "e015f211ebb898c8180887012b938f3851e719ac"
 uuid = "b53b4c65-9356-5827-b1ea-8c7a1a84506f"
 version = "1.6.55+0"
+
+[[deps.libva_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Xorg_libX11_jll", "Xorg_libXext_jll", "Xorg_libXfixes_jll", "libdrm_jll"]
+git-tree-sha1 = "7dbf96baae3310fe2fa0df0ccbb3c6288d5816c9"
+uuid = "9a156e7d-b971-5f62-b2c9-67348b8fb97c"
+version = "2.23.0+0"
 
 [[deps.libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll"]
@@ -1409,7 +1434,7 @@ version = "4.1.0+0"
 # ╟─09382a24-7e35-45ac-bfbc-46ea15a40590
 # ╟─23007175-ffd5-4cb3-9b8c-344eb5d7cce1
 # ╟─6ee903bb-66ab-496c-baf9-0c39f5dadda8
-# ╟─98063156-9304-45e7-ad9c-af6dd39187b8
+# ╟─5e0febd2-3f0d-4643-8401-4abd553ff14e
 # ╟─a48b8239-ff4c-4b14-8f6e-88d240bd29ac
 # ╟─64c9a463-7109-4ef0-9789-4fc885e98be9
 # ╟─04ec5e72-71b8-4a63-b73f-b1851664445c
@@ -1427,6 +1452,7 @@ version = "4.1.0+0"
 # ╟─9d2ab913-28f8-443b-a60f-74a6d9e083e8
 # ╟─fc2b703d-d692-470c-a503-335426b50f1a
 # ╟─3fbdadde-05a3-4737-899b-3f4e352be7ee
+# ╟─22e59d9d-6abc-42eb-86a8-5b3462f7529e
 # ╠═4d557e55-abaa-4526-9a80-1d32fd656633
 # ╠═7471cb12-234e-4b4e-83bc-8ebca7493647
 # ╟─f8bbe15a-30be-4e5f-9c88-4c46b1d0307c
